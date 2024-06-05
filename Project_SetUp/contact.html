@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./contact.css" />
+    <title>Calum's Cafe</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <a href="./home.html">Home</a>
+        </li>
+        <li>
+          <a href="./contact.html">Contact Us</a>
+        </li>
+        <li>
+          <a href="./book.html">Book</a>
+        </li>
+        <li>
+          <a href="bookings.html">Bookings</a>
+        </li>
+      </ul>
+    </nav>
+
+    <header>
+      <h1>Contact Us- Calum's Cafe</h1>
+      <p>Best Coffee in Sydney</p>
+    </header>
+    <main>
+      <form class="contact-form" onsubmit="return submitMessage(event)">
+        <label for="email">Email: </label>
+        <input type="text" name="email" id="email" required />
+        <label for="fullName">Full Name: </label>
+        <input type="text" name="fullName" id="fullName" required />
+        <label for="feedbackType">Feedback Type</label>
+        <select name="feedbackType" id="feedbackType">
+          <option value="review">Review</option>
+          <option value="complaint">Complaint</option>
+          <option value="event">Book Event</option>
+        </select>
+        <label for="comment">Comment: </label>
+        <!-- <textarea name="comment" id="comment" rows="3" cols="30" required>
+        Leave your comment here</textarea
+        > -->
+        <textarea
+          name="comment"
+          id="comment"
+          cols="30"
+          rows="3"
+          placeholder="Leave your comment here"
+          required
+        ></textarea>
+        <button>Clear</button>
+        <!-- <button>Submit</button> -->
+        <input type="submit" value="Submit" />
+      </form>
+    </main>
+    <footer>
+      <div class="form-title-section">
+        <h3>Contact Messages</h3>
+        <button onclick="deleteMessages();">Clear Messages</button>
+      </div>
+      <div class="form-wrapper">
+        <dl id="currentMessages"></dl>
+      </div>
+    </footer>
+    <script>
+      function deleteMessages() {
+        if (window.sessionStorage.getItem("messages")) {
+          window.sessionStorage.removeItem("messages");
+        }
+        renderMessages();
+      }
+
+      function submitMessage(event) {
+        event.preventDefault();
+        //console.log("Its is working");
+        const email = document.getElementById("email").value;
+        const fullName = document.getElementById("fullName").value;
+        const feedbackType = document.getElementById("feedbackType").value;
+        const comment = document.getElementById("comment").value;
+        const messageObject = {
+          email,
+          fullName,
+          feedbackType,
+          comment,
+        };
+        //console.log(messageObject);
+
+        let currentMessages = [];
+        if (window.sessionStorage.getItem("messages")) {
+          currentMessages = JSON.parse(
+            window.sessionStorage.getItem("messages")
+          );
+        }
+        currentMessages.push(messageObject);
+
+        window.sessionStorage.setItem(
+          "messages",
+          JSON.stringify(currentMessages)
+        );
+      }
+
+      function renderMessages() {
+        let currentMessages = [];
+        if (window.sessionStorage.getItem("messages")) {
+          currentMessages = JSON.parse(
+            window.sessionStorage.getItem("messages")
+          );
+        }
+
+        let listItems = [];
+        for (let i = 0; i < currentMessages.length; i++) {
+          let listItem = "";
+          const currentMessage = currentMessages[i];
+          listItem += `<dt>${currentMessage.fullName} - ${currentMessage.email}</dt>`;
+          listItem += `<dd>${currentMessage.feedbackType} : ${currentMessage.comment}</dd>`;
+          listItem += `<br />`;
+          listItems.push(listItem);
+        }
+        let descList = document.getElementById("currentMessages");
+        descList.innerHTML = listItems.join("");
+      }
+
+      renderMessages();
+    </script>
+  </body>
+</html>
